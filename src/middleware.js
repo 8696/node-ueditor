@@ -15,7 +15,6 @@ module.exports = (options) => {
             .toString().replace(/\/\*[\s\S]+?\*\//g, ''));
         cache.set('config', config);
         cache.set('options', options);
-        console.error(options);
         action.init();
     } catch (e) {
         throw new Error('UEditor config file damage, please reinstall ;');
