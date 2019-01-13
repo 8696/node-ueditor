@@ -1,7 +1,6 @@
 const cache = require('./cache');
 const commApi = require('./comm.api');
 const fs = require('fs');
-const fsExtra = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 const makeDir = require('make-dir');
