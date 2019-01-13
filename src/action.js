@@ -6,7 +6,10 @@ const path = require('path');
 const glob = require('glob');
 const makeDir = require('make-dir');
 const formidable = require('formidable');
+const request = require('request');
+const mimeTypes = require('mime-types');
 const parse = require('./parse');
+const Queue = require('./queue');
 let config = {};
 let options = {};
 module.exports = {
@@ -32,7 +35,6 @@ module.exports = {
                     fileName = `${commApi.makeKey()}.png`,
                     filePath = path.resolve(dir, `./${fileName}`);
                 fs.writeFileSync(filePath, dataBuffer);
-                console.error(options);
                 send(response, {
                     original: fileName,
                     size: 1,
@@ -91,6 +93,64 @@ module.exports = {
                     start,
                     state: 'SUCCESS',
                     total: files.length
+                });
+                break;
+            }
+            case 'catchimage': {
+                let body = await parse.body(NativeRequest),
+                    image = body['source[]'],
+                    remote = [],
+                    list = [],
+                    queue = new Queue(),
+                    dir = await makeDir(path.resolve(options.publicPath, options.uploadsPath + '/' + query.action));
+
+                if (typeof image === 'string') {
+                    remote.push(image);
+                } else {
+                    remote = image;
+                }
+                remote = [...new Set(remote)];
+
+                async function download(url, filePath) {
+                    return new Promise((resolve, reject) => {
+                        request(url)
+                            .on('response', (res) => {
+                                let name = mimeTypes.extension(res.headers['content-type']);
+                                filePath = path.resolve(filePath, commApi.makeKey()) + '.' + name;
+                                res.pipe(fs.createWriteStream(filePath))
+                                    .on('close', () => {
+                                        resolve(filePath);
+                                    });
+                            });
+                    });
+                }
+
+                await (async function () {
+                    return new Promise((resolve, reject) => {
+                        remote.forEach(async (item, index) => {
+                            await queue.push(async (next) => {
+                                let file = await download(item, dir);
+                                list.push({
+                                    original: item,
+                                    size: 0,
+                                    source: item,
+                                    state: 'SUCCESS',
+                                    title: 'default',
+                                    url: file.replace(options.publicPath, '')
+                                        .replace(/\\/g, '/')
+                                });
+                                if (index === remote.length - 1) {
+                                    resolve();
+                                } else {
+                                    await next();
+                                }
+                            });
+                        });
+                    });
+                }());
+                send(response, {
+                    list,
+                    state: 'SUCCESS'
                 });
             }
         }
