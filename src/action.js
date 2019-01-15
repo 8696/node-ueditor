@@ -5,8 +5,7 @@ const path = require('path');
 const glob = require('glob');
 const makeDir = require('make-dir');
 const formidable = require('formidable');
-const request = require('request');
-const mimeTypes = require('mime-types');
+
 const parse = require('./parse');
 const Download = require('node-remote-file-save');
 let config = {};
