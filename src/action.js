@@ -8,7 +8,7 @@ const formidable = require('formidable');
 const request = require('request');
 const mimeTypes = require('mime-types');
 const parse = require('./parse');
-const Queue = require('./queue');
+const Download = require('node-remote-file-save');
 let config = {};
 let options = {};
 module.exports = {
@@ -100,7 +100,6 @@ module.exports = {
                     image = body['source[]'],
                     remote = [],
                     list = [],
-                    queue = new Queue(),
                     dir = await makeDir(path.resolve(options.publicPath, options.uploadsPath + '/' + query.action));
 
                 if (typeof image === 'string') {
@@ -109,44 +108,27 @@ module.exports = {
                     remote = image;
                 }
                 remote = [...new Set(remote)];
-
-                async function download(url, filePath) {
-                    return new Promise((resolve, reject) => {
-                        request(url)
-                            .on('response', (res) => {
-                                let name = mimeTypes.extension(res.headers['content-type']);
-                                filePath = path.resolve(filePath, commApi.makeKey()) + '.' + name;
-                                res.pipe(fs.createWriteStream(filePath))
-                                    .on('close', () => {
-                                        resolve(filePath);
-                                    });
-                            });
-                    });
-                }
-
-                await (async function () {
-                    return new Promise((resolve, reject) => {
-                        remote.forEach(async (item, index) => {
-                            await queue.push(async (next) => {
-                                let file = await download(item, dir);
-                                list.push({
-                                    original: item,
-                                    size: 0,
-                                    source: item,
-                                    state: 'SUCCESS',
-                                    title: 'default',
-                                    url: file.replace(options.publicPath, '')
-                                        .replace(/\\/g, '/')
-                                });
-                                if (index === remote.length - 1) {
-                                    resolve();
-                                } else {
-                                    await next();
-                                }
-                            });
+                let download = new Download();
+                download.setConfig({
+                    dir,
+                    meanwhile: 3,
+                });
+                download.push(remote);
+                let downloadList = await download.exec();
+                downloadList.forEach(item => {
+                    if (item.status === 200) {
+                        list.push({
+                            original: item.resource,
+                            source: item.resource,
+                            size: 0,
+                            state: 'SUCCESS',
+                            title: '',
+                            url: item.data.filePath.replace(options.publicPath, '')
+                                .replace(/\\/g, '/')
                         });
-                    });
-                }());
+                    }
+                });
+                // console.log(downloadList);
                 send(response, {
                     list,
                     state: 'SUCCESS'
