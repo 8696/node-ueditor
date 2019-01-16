@@ -110,7 +110,7 @@ module.exports = {
                 let download = new Download();
                 download.setConfig({
                     dir,
-                    meanwhile: 3,
+                    meanwhile: 10,
                 });
                 download.push(remote);
                 let downloadList = await download.exec();

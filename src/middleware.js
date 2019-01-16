@@ -2,14 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const cache = require('./cache');
 const action = require('./action');
-
+const commApi = require('./comm.api');
 module.exports = (options) => {
-    let defaultOptions = {};
+    let defaultOptions = {uploadsPath: '.'};
     options = Object.assign(defaultOptions, options);
-    options.serverUrl = '/' + options.serverUrl.replace(/^\//, '');
-    options.uploadsPath = options.uploadsPath.replace(/^\//, '')
-        .replace(/\/$/, '');
-
+    options.serverUrl = commApi.removeStrEnd(options.serverUrl);
+    options.uploadsPath = commApi.removeStrEnd(options.uploadsPath);
     try {
         let config = JSON.parse(fs.readFileSync(path.resolve(__dirname, './config/ueditor.json'))
             .toString().replace(/\/\*[\s\S]+?\*\//g, ''));
@@ -22,7 +20,7 @@ module.exports = (options) => {
 
     return async (a, b, c) => {
         let isKoa = c === undefined;
-        if ((isKoa ? a.request.path : a.path) === options.serverUrl) {
+        if (commApi.removeStrEnd((isKoa ? a.request.path : a.path)) === options.serverUrl) {
             try {
                 await action.action({
                     NativeRequest: isKoa ? a['req'] : a,
