@@ -1,7 +1,7 @@
 {
   "name": "node-ueditor",
   "version": "1.0.2",
-  "description": "nodejs后端百度UEditor支持中间件，支持koa和express",
+  "description": "nodejs版百度UEditor后端支持中间件，支持koa和express",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

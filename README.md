@@ -2,26 +2,28 @@
 
 #### 项目介绍
 
-- nodejs后端百度UEditor支持中间件，支持koa和express
+- nodejs版百度UEditor后端支持中间件，支持koa和express
 
 #### 安装
  
 - (c)npm node-ueditor -D
 
+#### 使用注意
+- 建议 [下载](https://ueditor.baidu.com/website/download.html) php版本，下载资源后建议删除资源中php代码，因为会因为use顺序先进入静态资源目录从而匹配到
 
 #### 使用
 ```javascript
 
 const nodeUeditor = require('node-ueditor');
 app.use(nodeUeditor({
-    // 静态资源目录,因为需要公开访问
+    // 静态资源目录,需要公开访问
     publicPath: path.resolve(__dirname, './public'),
-    // php版默认服务端地址，可在 ueditor/ueditor.config.js文件中更改‘serverUrl’配置
+    // php版默认服务端地址，可在资源配置中ueditor/ueditor.config.js更改‘serverUrl’配置
+    // 如果使用默认服务端地址,建议删除下载后资源中php代码，或者此中间件在静态资源前面进行use
     serverUrl: '/ueditor/php/controller.php',
-    // 可选 || 相对静态目录
+    // 可选 || 相对静态资源目录
     uploadsPath: '/baidu/',
 }));
-
 
 
 // ### 001
@@ -69,8 +71,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const main = require('node-ueditor');
-app.use(main({
+const nodeUeditor = require('node-ueditor');
+app.use(nodeUeditor({
 
     publicPath: path.resolve(__dirname, './public'),
     serverUrl: '/ueditor/php/controller.php',
