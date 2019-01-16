@@ -1,6 +1,6 @@
 {
   "name": "node-ueditor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "nodejs后端百度UEditor支持中间件，支持koa和express",
   "main": "main.js",
   "scripts": {

@@ -16,4 +16,4 @@ selenium-debug.log
 *.njsproj
 *.sln
 .app.key
-/public/upload/
+/public
