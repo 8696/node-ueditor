@@ -13,13 +13,12 @@
 
 #### 使用
 ```javascript
-
 const nodeUeditor = require('node-ueditor');
 app.use(nodeUeditor({
-    // 静态资源目录,需要公开访问
+    // 静态资源目录,因需要公开访问
     publicPath: path.resolve(__dirname, './public'),
-    // php版默认服务端地址，可在资源配置中ueditor/ueditor.config.js更改‘serverUrl’配置
-    // 如果使用默认服务端地址,建议删除下载后资源中php代码，或者此中间件在静态资源前面进行use
+    // php版前端配置中默认服务端地址，可在资源配置中ueditor/ueditor.config.js更改‘serverUrl’配置
+    // 如果使用默认服务端地址,建议删除下载后资源中的php代码，或者此中间件在use静态资源前进行use
     serverUrl: '/ueditor/php/controller.php',
     // 可选 || 相对静态资源目录
     uploadsPath: '/baidu/',
