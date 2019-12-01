@@ -6,7 +6,7 @@
 
 #### 安装
  
-- (c)npm node-ueditor -D
+- (c)npm install node-ueditor -D
 
 #### 使用注意
 - 建议 [下载](https://ueditor.baidu.com/website/download.html) php版本，下载资源后建议删除资源中php代码，因为会因为use顺序先进入静态资源目录从而匹配到
