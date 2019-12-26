@@ -12,21 +12,21 @@ const main = require('../main');
 
 app.use(main({
 
-    publicPath: path.resolve(__dirname, '../public'),
-    uploadsPath: '/upload/',
-    serverUrl: '/ueditor/php/controller.php'
+  publicPath: path.resolve(__dirname, '../public'),
+  uploadsPath: '/upload/',
+  serverUrl: '/ueditor/php/controller.php'
 
 }));
 app.use(async (ctx, next) => {
-    console.log('next');
-    await next();
+  console.log('next');
+  await next();
 });
 app.use(router.routes());
 
 router.get('/next', async (ctx, next) => {
-    ctx.body = {
-        msg: 'next'
-    };
+  ctx.body = {
+    msg: 'next'
+  };
 });
 app.listen(8030);
 

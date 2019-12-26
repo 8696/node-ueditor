@@ -6,20 +6,20 @@ const main = require('../main');
 
 app.use(main({
 
-    publicPath: path.resolve(__dirname, '../public'),
-    uploadsPath: '/upload/',
-    serverUrl: '/ueditor/php/controller.php'
+  publicPath: path.resolve(__dirname, '../public'),
+  uploadsPath: '/upload/',
+  serverUrl: '/ueditor/php/controller.php'
 
 }));
 
 app.use(function (req, res, next) {
-    console.log('next');
-    next();
+  console.log('next');
+  next();
 });
 app.get('/next', (req, res) => {
-    res.send({
-        msg: 'next'
-    });
+  res.send({
+    msg: 'next'
+  });
 });
 
 app.listen(8031);
