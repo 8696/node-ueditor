@@ -24,9 +24,15 @@ app.use(nodeUeditor({
     uploadsPath: '/baidu/',
 }));
 
+```
 
-// ### 001
-//koa
+#### 例子
+
+`test`文件夹下提供demo
+
+- koa
+
+```javascript
 
 const Koa = require('koa');
 const path = require('path');
@@ -34,7 +40,6 @@ const staticServer = require('koa-static');
 const Router = require('koa-router');
 const router = new Router();
 const app = new Koa();
-
 
 // require node-ueditor
 const nodeUeditor = require('node-ueditor');
@@ -61,10 +66,10 @@ router.get('/next', async (ctx, next) => {
 });
 app.listen(8032);
 
+```
 
-
-// ### 002
-//express
+- express
+```javascript
 
 const express = require('express');
 const app = express();
@@ -92,6 +97,5 @@ app.get('/next', (req, res) => {
 });
 
 app.listen(8033);
-
 
 ```
